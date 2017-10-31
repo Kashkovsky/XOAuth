@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{71D011EF-565D-4298-8F98-D1C5B0F13250}</ProjectGuid>
+    <ProjectTypeGuids>{A3F8F2AB-B479-4A4A-A458-A89E7DC349F1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <RootNamespace>XOAuth</RootNamespace>
+    <AssemblyName>XOAuth</AssemblyName>
+    <MonoMacResourcePrefix>Resources</MonoMacResourcePrefix>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkIdentifier>Xamarin.Mac</TargetFrameworkIdentifier>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <EnableCodeSigning>false</EnableCodeSigning>
+    <CreatePackage>false</CreatePackage>
+    <EnablePackageSigning>false</EnablePackageSigning>
+    <IncludeMonoRuntime>false</IncludeMonoRuntime>
+    <UseSGen>false</UseSGen>
+    <HttpClientHandler>HttpClientHandler</HttpClientHandler>
+    <LinkMode>None</LinkMode>
+    <XamMacArch></XamMacArch>
+    <LangVersion>Latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <DefineConstants></DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <EnableCodeSigning>false</EnableCodeSigning>
+    <CreatePackage>false</CreatePackage>
+    <EnablePackageSigning>false</EnablePackageSigning>
+    <IncludeMonoRuntime>false</IncludeMonoRuntime>
+    <UseSGen>false</UseSGen>
+    <HttpClientHandler>HttpClientHandler</HttpClientHandler>
+    <LinkMode>None</LinkMode>
+    <XamMacArch></XamMacArch>
+    <LangVersion>Latest</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="Xamarin.Mac" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\netstandard1.3\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Base\XOAuthRequest.cs" />
+    <Compile Include="Base\ClientConfig.cs" />
+    <Compile Include="Base\Logger.cs" />
+    <Compile Include="Base\Requestable.cs" />
+    <Compile Include="Base\XOAuthBase.cs" />
+    <Compile Include="Domain\Constants.cs" />
+    <Compile Include="Domain\LogLevel.cs" />
+    <Compile Include="Domain\XOAuthSettings.cs" />
+    <Compile Include="Exceptions\XOAuthException.cs" />
+    <Compile Include="KeychainUtils\KeychainItemType.cs" />
+    <Compile Include="Domain\XOAuthDictionary.cs" />
+    <Compile Include="Extensions\DateTimeExtensions.cs" />
+    <Compile Include="Base\Securable.cs" />
+    <Compile Include="Base\AuthConfig.cs" />
+    <Compile Include="Base\RequestPerformer.cs" />
+    <Compile Include="Base\XOAuthResponse.cs" />
+    <Compile Include="Extensions\JsonHelper.cs" />
+    <Compile Include="KeychainUtils\KeychainGenericPasswordType.cs" />
+    <Compile Include="KeychainUtils\KeychainServiceType.cs" />
+    <Compile Include="KeychainUtils\Keychain.cs" />
+    <Compile Include="Utils\Key.cs" />
+    <Compile Include="KeychainUtils\KSec.cs" />
+    <Compile Include="KeychainUtils\KeychainAccount.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Extensions\ObjectExtensions.cs" />
+    <Compile Include="Extensions\NSUrlRequestExtensions.cs" />
+    <Compile Include="Base\ContextStore.cs" />
+    <Compile Include="Base\RequestParams.cs" />
+    <Compile Include="Base\CustomAuthorizerUI.cs" />
+    <Compile Include="Flows\XOAuth.cs" />
+    <Compile Include="Flows\DynamicRegistrar.cs" />
+    <Compile Include="Domain\RegistrationBody.cs" />
+    <Compile Include="Platform\Authorizer.cs" />
+    <Compile Include="Platform\WebViewController.cs" />
+    <Compile Include="Extensions\ViewExtensions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Base\" />
+    <Folder Include="Domain\" />
+    <Folder Include="Exceptions\" />
+    <Folder Include="KeychainUtils\" />
+    <Folder Include="Extensions\" />
+    <Folder Include="Utils\" />
+    <Folder Include="Flows\" />
+    <Folder Include="Platform\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
+  <Import Project="..\packages\NETStandard.Library.2.0.1\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.1\build\netstandard2.0\NETStandard.Library.targets')" />
+</Project>
