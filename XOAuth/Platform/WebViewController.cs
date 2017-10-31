@@ -10,11 +10,10 @@ namespace XOAuth.Platform
 {
 	public class WebViewController : NSViewController, INSWindowDelegate, IWKNavigationDelegate
 	{
-		private const float WebViewWindowWidth = 600f;
-		private const float WebViewWindowHeight = 500f;
+		public const float WebViewWindowWidth = 600f;
+		public const float WebViewWindowHeight = 500f;
 
 		private XOAuthBase _oauth;
-		private bool _willBecomeSheet;
 
 		private NSUrl _startUrl;
 		private NSUrlComponents _interceptcomponents;
@@ -42,6 +41,8 @@ namespace XOAuth.Platform
 				return view;
 			}
 		}
+
+		public bool WillBecomeSheet { get; set; }
 
 		public NSUrl StartUrl
 		{
@@ -101,7 +102,7 @@ namespace XOAuth.Platform
 
 			View.AddSubviewFullSize(_webView);
 
-			if (_willBecomeSheet)
+			if (WillBecomeSheet)
 			{
 				var btn = new NSButton(new CGRect(0f, 0f, 120f, 20f))
 				{

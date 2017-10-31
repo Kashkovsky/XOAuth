@@ -82,9 +82,9 @@ namespace XOAuth.Base
 		}
 		public bool IsAuthorizing => DidAuthorizeOrFail != null;
 
-		public Action<XOAuthDictionary, XOAuthError?> DidAuthorizeOrFail { get; protected set; }
-		public Action<XOAuthDictionary, XOAuthError?> AfterAuthorizeOrFail { get; protected set; }
-		public Action<bool, XOAuthError?> InternalAfterAuthorizeOrFail { get; protected set; }
+		public Action<XOAuthDictionary, XOAuthError?> DidAuthorizeOrFail { get; set; }
+		public Action<XOAuthDictionary, XOAuthError?> AfterAuthorizeOrFail { get; set; }
+		public Action<bool, XOAuthError?> InternalAfterAuthorizeOrFail { get; set; }
 
 		public XOAuthBase(XOAuthSettings settings) : base(settings)
 		{
