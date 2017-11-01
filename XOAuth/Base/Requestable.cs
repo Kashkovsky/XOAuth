@@ -93,10 +93,10 @@ namespace XOAuth.Base
 
 		protected XOAuthDictionary GetParamsFromQuery(string query)
 		{
-			return Regex.Matches(query, "([^?=&]+)(=([^&]*))?")
+			var result = Regex.Matches(query, "([^?=&]+)(=([^&]*))?")
 							 .Cast<Match>()
-							 .ToDictionary(x => x.Groups[1].Value, x => System.Net.WebUtility.UrlDecode(x.Groups[3].Value))
-						as XOAuthDictionary;
+							 .ToDictionary(x => x.Groups[1].Value, x => System.Net.WebUtility.UrlDecode(x.Groups[3].Value));
+			return new XOAuthDictionary(result);
 		}
 	}
 }

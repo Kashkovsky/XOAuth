@@ -50,14 +50,14 @@ namespace XOAuth.Flows
 
 			var request = new NSMutableUrlRequest(registrationUrl);
 			request.HttpMethod = HttpMethod.POST;
-			request.SetValueForKey(HttpContentType.Json, "Content-Type");
-			request.SetValueForKey("application/json", "Accept");
+			request.Headers["Content - Type"] = HttpContentType.Json.ToNS();
+			request.Headers["Accept"] = "application/json".ToNS();
 
 			if (ExtraHeaders != null)
 			{
 				foreach (var header in ExtraHeaders)
 				{
-					request.SetValueForKey(header.Value, header.Key);
+					request.Headers[header.Key] = header.Value.ToNS();
 				}
 			}
 

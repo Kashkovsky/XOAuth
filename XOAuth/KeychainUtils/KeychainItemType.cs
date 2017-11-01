@@ -1,4 +1,5 @@
 ﻿using Foundation;
+using XOAuth.Extensions;
 
 namespace XOAuth.KeychainUtils
 {
@@ -7,7 +8,7 @@ namespace XOAuth.KeychainUtils
 		public string AccessMode { get; } = KSec.AttrAccessibleWhenUnlocked;
 		public string AccessGroup { get; }
 
-		public virtual NSMutableDictionary<NSString, NSObject> Attributes { get; }
+		public virtual NSMutableDictionary<NSString, NSObject> Attributes { get; } = new NSMutableDictionary<NSString, NSObject>();
 		public NSMutableDictionary<NSString, NSObject> Data { get; set; }
 		public virtual NSMutableDictionary<NSString, NSObject> DataToStore { get; }
 
@@ -21,11 +22,11 @@ namespace XOAuth.KeychainUtils
 		{
 			get
 			{
-				var itemAttributes = Attributes.Copy() as NSMutableDictionary<NSString, NSObject>;
+				var itemAttributes = Attributes;
 				var archivedData = NSKeyedArchiver.ArchivedDataWithRootObject(DataToStore);
 				itemAttributes[KSec.ValueData] = archivedData;
 				if (!string.IsNullOrEmpty(AccessGroup))
-					itemAttributes[KSec.AttrAccessGroup] = NSObject.FromObject(AccessGroup);
+					itemAttributes[KSec.AttrAccessGroup] = AccessGroup.ToNS();
 				return itemAttributes;
 			}
 		}
@@ -34,11 +35,11 @@ namespace XOAuth.KeychainUtils
 		{
 			get
 			{
-				var attributes = Attributes.Copy() as NSMutableDictionary<NSString, NSObject>;
-				attributes[KSec.ReturnData] = NSObject.FromObject(true);
-				attributes[KSec.ReturnAttributes] = NSObject.FromObject(true);
+				var attributes = Attributes;
+				attributes[KSec.ReturnData] = true.ToNS();
+				attributes[KSec.ReturnAttributes] = true.ToNS();
 				if (!string.IsNullOrEmpty(AccessGroup))
-					attributes[KSec.AttrAccessGroup] = NSObject.FromObject(AccessGroup);
+					attributes[KSec.AttrAccessGroup] = AccessGroup.ToNS();
 				return attributes;
 			}
 		}
@@ -55,7 +56,7 @@ namespace XOAuth.KeychainUtils
 			if (keychain == null)
 				keychain = new Keychain();
 
-			keychain.InsertItemWithAttributes(Attributes);
+			keychain.InsertItemWithAttributes(AttributesToSave);
 		}
 
 		public void RemoveFromKeychain(KeychainServiceType keychain = null)

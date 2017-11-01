@@ -30,18 +30,13 @@ namespace XOAuth.Extensions
 			if (string.IsNullOrEmpty(oauth.ClientConfig.AccessToken))
 				throw new XOAuthException(XOAuthError.NoAccessToken);
 
-			request.SetValueForKey($"Bearer {oauth.ClientConfig.AccessToken}".ToNS(), "Authorization".ToNS());
+			request.Headers["Authorization"] = $"Bearer {oauth.ClientConfig.AccessToken}".ToNS();
 		}
 
 		public static NSUrlRequest Signed(this NSUrlRequest request, XOAuthBase oauth)
 		{
 			request.Sign(oauth);
 			return request;
-		}
-
-		public static void SetValueForKey(this NSUrlRequest request, string value, string key)
-		{
-			request.SetValueForKey(value.ToNS(), key.ToNS());
 		}
 	}
 }

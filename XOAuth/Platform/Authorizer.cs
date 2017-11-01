@@ -32,24 +32,27 @@ namespace XOAuth.Platform
 
 		public void AuthorizeEmbedded(AuthConfig config, NSUrl url)
 		{
-			var window = config.AuthorizeContext as NSWindow;
-			if (window != null)
+			NSApplication.SharedApplication.InvokeOnMainThread(() =>
 			{
-				var sheet = AuthorizeEmbedded(window, url);
-				if (config.AuthorizeEmbeddedAutoDismiss)
-					OAuth.InternalAfterAuthorizeOrFail = (wasFailure, error) => window.EndSheet(sheet);
-			}
-			else
-			{
-				_windowController = AuthorizeInNewWindow(url);
-				if (config.AuthorizeEmbeddedAutoDismiss)
-					OAuth.InternalAfterAuthorizeOrFail = (wasFailure, error) =>
-					{
-						_windowController?.Window?.Close();
-						_windowController.Dispose();
-						_windowController = null;
-					};
-			}
+				var window = config.AuthorizeContext as NSWindow;
+				if (window != null)
+				{
+					var sheet = AuthorizeEmbedded(window, url);
+					if (config.AuthorizeEmbeddedAutoDismiss)
+						OAuth.InternalAfterAuthorizeOrFail = (wasFailure, error) => window.EndSheet(sheet);
+				}
+				else
+				{
+					_windowController = AuthorizeInNewWindow(url);
+					if (config.AuthorizeEmbeddedAutoDismiss)
+						OAuth.InternalAfterAuthorizeOrFail = (wasFailure, error) =>
+						{
+							_windowController?.Window?.Close();
+							_windowController.Dispose();
+							_windowController = null;
+						};
+				}
+			});
 		}
 
 		public void OpenAuthorizeUrlInBrowser(NSUrl url)

@@ -61,8 +61,8 @@ namespace XOAuth.Base
 			var finalUrl = AsUrl();
 			var request = new NSMutableUrlRequest(finalUrl);
 			request.HttpMethod = Method;
-			request.SetValueForKey(NSObject.FromObject(ContentType), new NSString("Content-Type"));
-			request.SetValueForKey(NSObject.FromObject(HttpContentType.Json), new NSString("Accept"));
+			request.Headers["Content-Type"] = ContentType.ToNS();
+			request.Headers["Accept"] = HttpContentType.Json.ToNS();
 
 			if (!string.IsNullOrEmpty(oauth.ClientConfig.ClientId) && !string.IsNullOrEmpty(oauth.ClientConfig.ClientSecret))
 			{
@@ -77,7 +77,7 @@ namespace XOAuth.Base
 					oauth.Logger?.Log("Adding “Authorization” header as “Basic client-key:client-secret”");
 					var pw = $"{WebUtility.UrlEncode(oauth.ClientConfig.ClientId)}:{WebUtility.UrlEncode(oauth.ClientConfig.ClientSecret)}";
 					var base64 = Convert.ToBase64String(oauth.ClientConfig.AuthStringEncoding.GetBytes(pw));
-					request.SetValueForKey($"Basic {base64}".ToNS(), "Authorization".ToNS());
+					request.Headers["Authorization"] = $"Basic {base64}".ToNS();
 
 					finalParams.RemoveValue(RequestKey.ClientId);
 					finalParams.RemoveValue(RequestKey.ClientSecret);
@@ -89,7 +89,7 @@ namespace XOAuth.Base
 				foreach (var header in oauth.AuthHeaders)
 				{
 					oauth.Logger?.Log($"Overriding {header.Key} header");
-					request.SetValueForKey(header.Value.ToNS(), header.Key.ToNS());
+					request.Headers[header.Key] = header.Value.ToNS();
 				}
 			}
 
@@ -98,7 +98,7 @@ namespace XOAuth.Base
 				foreach (var header in Headers)
 				{
 					oauth.Logger?.Log($"Adding custom {header.Key} header");
-					request.SetValueForKey(header.Value.ToNS(), header.Key.ToNS());
+					request.Headers[header.Key] = header.Value.ToNS();
 				}
 			}
 

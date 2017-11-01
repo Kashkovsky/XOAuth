@@ -46,7 +46,7 @@ namespace XOAuth.Base
 			}
 		}
 
-		public Securable(XOAuthSettings settings, bool verbose) : base(verbose)
+		public Securable(XOAuthSettings settings) : base(settings.Verbose)
 		{
 			_settings = settings;
 			if (!string.IsNullOrEmpty(settings.KeychainAccountForClientCredentials))
@@ -62,10 +62,6 @@ namespace XOAuth.Base
 
 			if (_useKeychain)
 				UpdateFromKeychain();
-		}
-
-		public Securable(XOAuthSettings settins) : this(settins, false)
-		{
 		}
 
 		protected abstract void UpdateFromKeychainItems(NSMutableDictionary<NSString, NSObject> items);
@@ -130,7 +126,7 @@ namespace XOAuth.Base
 			}
 			catch (XOAuthException ex)
 			{
-				Logger.Log($"Failed to store to keychain: {ex}", LogLevel.Error);
+				Logger?.Log($"Failed to store to keychain: {ex}", LogLevel.Error);
 			}
 		}
 
@@ -145,7 +141,7 @@ namespace XOAuth.Base
 			}
 			catch (XOAuthException ex)
 			{
-				Logger.Log($"Failed to load client credentials from keychain: {ex}", LogLevel.Error);
+				Logger?.Log($"Failed to load client credentials from keychain: {ex}", LogLevel.Error);
 			}
 
 			try
@@ -156,7 +152,7 @@ namespace XOAuth.Base
 			}
 			catch (XOAuthException ex)
 			{
-				Logger.Log($"Failed to load tokens from keychain: {ex}", LogLevel.Error);
+				Logger?.Log($"Failed to load tokens from keychain: {ex}", LogLevel.Error);
 			}
 		}
 	}

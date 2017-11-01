@@ -5,7 +5,7 @@ namespace XOAuth.Base
 	{
 		private string _state;
 
-		public string State => _state ?? (_state = Guid.NewGuid().ToString());
+		public string State => _state ?? (_state = Guid.NewGuid().ToString().Split('-')[0]);
 		public string RedirectUrl { get; set; }
 
 		public bool MatchesState(string state)

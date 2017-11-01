@@ -1,4 +1,5 @@
 ﻿using System;
+using AppKit;
 using Foundation;
 using XOAuth.Base;
 using XOAuth.Domain;
@@ -91,6 +92,18 @@ namespace XOAuth.Flows
 			AuthConfig.AuthorizeContext = context;
 			Authorize(parameters, callback);
 		}
+
+		public NSUrl GetAuthorizeUrl(string redirect, string scope, XOAuthDictionary parameters)
+		{
+			var redirectUrl = redirect ?? ClientConfig.Redirect;
+			if (string.IsNullOrEmpty(redirectUrl))
+				throw new XOAuthException(XOAuthError.NoRedirectUrl);
+			var request = CreateAuthorizeRequest(redirectUrl, scope, parameters);
+			Context.RedirectUrl = redirectUrl;
+			return request.AsUrl();
+		}
+
+		public NSUrl GetAuthorizeUrl(XOAuthDictionary parameters = null) => GetAuthorizeUrl(null, null, parameters);
 
 		private void TryToObtainAccessTokenIfNeeded(XOAuthDictionary parameters, AuthCallback callback)
 		{
@@ -186,18 +199,6 @@ namespace XOAuth.Flows
 			Authorizer.OpenAuthorizeUrlInBrowser(url);
 		}
 
-		private NSUrl GetAuthorizeUrl(string redirect, string scope, XOAuthDictionary parameters)
-		{
-			var redirectUrl = redirect ?? ClientConfig.Redirect;
-			if (string.IsNullOrEmpty(redirectUrl))
-				throw new XOAuthException(XOAuthError.NoRedirectUrl);
-			var request = CreateAuthorizeRequest(redirect, scope, parameters);
-			Context.RedirectUrl = redirect;
-			return request.AsUrl();
-		}
-
-		private NSUrl GetAuthorizeUrl(XOAuthDictionary parameters = null) => GetAuthorizeUrl(null, null, parameters);
-
 		private XOAuthRequest CreateAuthorizeRequest(string redirect, string scope, XOAuthDictionary parameters)
 		{
 			if (ClientIdMandatory && (string.IsNullOrEmpty(ClientConfig.ClientId)))
@@ -235,11 +236,11 @@ namespace XOAuth.Flows
 		private void RegisterClientIfNeeded(AuthCallback callback)
 		{
 			if (!string.IsNullOrEmpty(ClientId) || ClientIdMandatory)
-				callback(null, null); //TODO: call on main thread??
+				NSApplication.SharedApplication.InvokeOnMainThread(() => callback(null, null));
 			else if (ClientConfig.RegistrationUrl != null)
 			{
 				var dynReg = OnBeforDynamicClientRegistration?.Invoke(ClientConfig.RegistrationUrl) ?? new DynamicRegistrar();
-				dynReg.Register(this, (json, error) => callback(json, error)); //TODO: call on main thread??
+				dynReg.Register(this, (json, error) => NSApplication.SharedApplication.InvokeOnMainThread(() => callback(json, error)));
 			}
 			else
 				callback(null, XOAuthError.NoRegistrationUrl);

@@ -11,6 +11,10 @@ namespace XOAuth.Domain
 		{
 		}
 
+		public XOAuthDictionary(IDictionary<string, string> source) : base(source)
+		{
+		}
+
 		public XOAuthDictionary(int capacity) : base(capacity)
 		{
 		}

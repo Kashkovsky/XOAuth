@@ -1,5 +1,6 @@
 ﻿using Foundation;
 using XOAuth.Exceptions;
+using XOAuth.Extensions;
 
 namespace XOAuth.KeychainUtils
 {
@@ -21,7 +22,7 @@ namespace XOAuth.KeychainUtils
 			{
 				return new NSMutableDictionary<NSString, NSObject>(
 					new[] { KSec.Class, KSec.AttrAccessible, KSec.AttrService, KSec.AttrAccount },
-					new[] { KSec.ClassGenericPassword, NSObject.FromObject(AccessMode), NSObject.FromObject(ServiceName), NSObject.FromObject(AccountName) });
+					new[] { KSec.ClassGenericPassword, AccessMode.ToNS(), ServiceName.ToNS(), AccountName.ToNS() });
 			}
 		}
 
