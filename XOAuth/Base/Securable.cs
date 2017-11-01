@@ -15,6 +15,7 @@ namespace XOAuth.Base
 		public string KeychainAccessMode { get; } = KSec.AttrAccessibleWhenUnlocked;
 		public string KeychainAccessGroup { get; }
 		public string KeychainServiceName { get; } = "http://localhost";
+		public ClientConfig ClientConfig { get; }
 
 		public bool UseKeychain
 		{
@@ -48,6 +49,8 @@ namespace XOAuth.Base
 
 		public Securable(XOAuthSettings settings) : base(settings.Verbose)
 		{
+			ClientConfig = new ClientConfig(settings);
+
 			_settings = settings;
 			if (!string.IsNullOrEmpty(settings.KeychainAccountForClientCredentials))
 				_keychainAccountForClientCredentials = settings.KeychainAccountForClientCredentials;

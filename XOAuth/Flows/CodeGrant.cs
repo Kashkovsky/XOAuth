@@ -43,11 +43,13 @@ namespace XOAuth.Flows
 					try
 					{
 						var data = response.ResponseJson();
+						var json = ParseAccessTokenResponse(data);
+
 						if (response.Response.StatusCode >= 400)
 							throw new XOAuthException(XOAuthError.Generic, $"Failed with status {response.Response.StatusCode}");
 
 						Logger?.Log($"Did exchange code for access [{!string.IsNullOrEmpty(ClientConfig.AccessToken)}] and refresh [{!string.IsNullOrEmpty(ClientConfig.RefreshToken)}] tokens");
-						DidAuthorize(data);
+						DidAuthorize(json);
 					}
 					catch (XOAuthException ex)
 					{

@@ -48,7 +48,13 @@ namespace XOAuth.KeychainUtils
 		{
 			var data = attributes[KSec.ValueData] as NSData;
 			if (data == null) return null;
-			return NSKeyedUnarchiver.UnarchiveObject(data) as NSMutableDictionary<NSString, NSObject>;
+			var unarchived = NSKeyedUnarchiver.UnarchiveObject(data);
+			var result = new NSMutableDictionary<NSString, NSObject>();
+			foreach (var item in unarchived as NSDictionary)
+			{
+				result.Add(item.Key, item.Value);
+			}
+			return result;
 		}
 
 		public void SaveInKeychain(KeychainServiceType keychain = null)

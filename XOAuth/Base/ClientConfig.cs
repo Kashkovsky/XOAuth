@@ -105,7 +105,7 @@ namespace XOAuth.Base
 				IdToken = idt;
 			AccessTokenExpiry = null;
 			if (json.HasNonEmptyValue(RequestKey.ExpiresIn, out var ei))
-				AccessTokenExpiry = DateTime.Parse(ei); //TODO: if int?
+				AccessTokenExpiry = ei.ParseAsExpiryDate(); //TODO: if int?
 			if (json.HasNonEmptyValue(RequestKey.RefreshToken, out var rt))
 				RefreshToken = rt;
 		}
@@ -136,7 +136,7 @@ namespace XOAuth.Base
 			{
 				if (items.HasNonEmptyValue(nameof(AccessTokenExpiry), out var ate))
 				{
-					var date = DateTime.Parse(ate);
+					var date = ate.ParseAsExpiryDate();
 					if (DateTime.Compare(date, DateTime.Now) > 0)
 					{
 						messages.Add($"Found access token valid until {date}");

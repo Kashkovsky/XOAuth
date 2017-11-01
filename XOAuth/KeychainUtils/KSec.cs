@@ -38,10 +38,6 @@ namespace XOAuth.KeychainUtils
 				AttrAccessible = Dlfcn.GetStringConstant(handle, "kSecAttrAccessible");
 				ReturnRef = Dlfcn.GetStringConstant(handle, "kSecReturnRef");
 				ValueData = Dlfcn.GetStringConstant(handle, "kSecValueData");
-
-				ErrSecDuplicateItem = Dlfcn.GetInt32(handle, "errSecDuplicateItem");
-				ErrSecSuccess = Dlfcn.GetInt32(handle, "errSecSuccess");
-				ErrSecItemNotFound = Dlfcn.GetInt32(handle, "errSecItemNotFound");
 			}
 			finally
 			{
@@ -169,8 +165,8 @@ namespace XOAuth.KeychainUtils
 		public static NSString AttrKeyClassPrivate { get; private set; }
 
 
-		public static int ErrSecDuplicateItem { get; private set; }
-		public static int ErrSecSuccess { get; private set; }
-		public static int ErrSecItemNotFound { get; private set; }
+		public static int ErrSecDuplicateItem => -25299;
+		public static int ErrSecSuccess => 0;
+		public static int ErrSecItemNotFound => -25300;
 	}
 }

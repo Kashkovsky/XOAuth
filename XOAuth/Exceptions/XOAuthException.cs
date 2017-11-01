@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+
 namespace XOAuth.Exceptions
 {
 	public class XOAuthException : Exception
@@ -11,6 +13,7 @@ namespace XOAuth.Exceptions
 		{
 			Error = error;
 			Fallback = fallback;
+			Debug.WriteLine($"[ERROR] Exception thrown: {error}, {message}");
 		}
 
 		public XOAuthException(int statusCode) : base(statusCode.ToString())

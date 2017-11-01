@@ -1,4 +1,5 @@
 ﻿using System;
+using AppKit;
 using Foundation;
 using XOAuth.Domain;
 using XOAuth.Exceptions;
@@ -12,7 +13,6 @@ namespace XOAuth.Base
 
 		public virtual string GrantType => "__undefined";
 		public virtual string ResponseType => null;
-		public ClientConfig ClientConfig { get; }
 		public virtual AuthConfig AuthConfig { get; set; } = new AuthConfig();
 
 		public string ClientId
@@ -88,8 +88,6 @@ namespace XOAuth.Base
 
 		public XOAuthBase(XOAuthSettings settings) : base(settings)
 		{
-			ClientConfig = new ClientConfig(settings);
-
 			if (!string.IsNullOrEmpty(settings.Title))
 				AuthConfig.UI.Title = settings.Title;
 
@@ -101,10 +99,7 @@ namespace XOAuth.Base
 			if (UseKeychain)
 				StoreTokensToKeychain();
 
-			DidAuthorizeOrFail?.Invoke(parameters, null);
-			DidAuthorizeOrFail = null;
-			InternalAfterAuthorizeOrFail?.Invoke(false, null);
-			AfterAuthorizeOrFail?.Invoke(parameters, null);
+			InvokePostAuthorizationActions(parameters, null);
 		}
 
 		//TODO: pass entire exception to log message
@@ -114,10 +109,8 @@ namespace XOAuth.Base
 				Logger?.Log(error.Value);
 			else
 				error = XOAuthError.RequestCancelled;
-			DidAuthorizeOrFail?.Invoke(null, error);
-			DidAuthorizeOrFail = null;
-			InternalAfterAuthorizeOrFail?.Invoke(true, error);
-			AfterAuthorizeOrFail?.Invoke(null, error);
+
+			InvokePostAuthorizationActions(null, error);
 		}
 
 		public void AbortAuthorization()
@@ -175,7 +168,7 @@ namespace XOAuth.Base
 			if (parameters.HasNonEmptyValue(RequestKey.TokenType, out var tt))
 			{
 				var tokenType = tt;
-				if (tokenType.Equals("bearer")) return;
+				if (tokenType.Equals("bearer", StringComparison.OrdinalIgnoreCase)) return;
 
 				throw new XOAuthException(XOAuthError.UnsupportedTokenType, $"Only “bearer” token is supported, but received {tokenType}");
 			}
@@ -232,5 +225,16 @@ namespace XOAuth.Base
 
 		public NSUrlRequest Request(NSUrl fromUrl, NSUrlRequestCachePolicy cachePolicy = NSUrlRequestCachePolicy.ReloadIgnoringLocalCacheData) =>
 		new NSUrlRequest(fromUrl, cachePolicy, 20).Signed(this);
+
+		private void InvokePostAuthorizationActions(XOAuthDictionary parameters, XOAuthError? error)
+		{
+			NSApplication.SharedApplication.InvokeOnMainThread(() =>
+			{
+				DidAuthorizeOrFail?.Invoke(parameters, error);
+				DidAuthorizeOrFail = null;
+				InternalAfterAuthorizeOrFail?.Invoke(error.HasValue, error);
+				AfterAuthorizeOrFail?.Invoke(parameters, error);
+			});
+		}
 	}
 }
