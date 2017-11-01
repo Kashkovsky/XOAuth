@@ -33,6 +33,7 @@ namespace XOAuth.Exceptions
 		Forbidden,
 		NoDataInResponse,
 		NoAccessToken,
+		NoRefreshToken,
 		ResponseError,
 		FromResponseError,
 		UnsupportedTokenType,
@@ -42,6 +43,12 @@ namespace XOAuth.Exceptions
 		Utf8EncodeError,
 		DynamicRegistrarError,
 		NoRegistrationUrl,
-		UnableToOpenAuthorizeURL
+		UnableToOpenAuthorizeURL,
+		NoClientId,
+		NoRedirectUrl,
+		AlreadyAuthorizing,
+		Generic,
+		InvalidRedirectUrl,
+		PrerequisiteFailed
 	}
 }

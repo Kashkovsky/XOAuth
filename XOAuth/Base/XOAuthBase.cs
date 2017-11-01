@@ -8,7 +8,7 @@ namespace XOAuth.Base
 {
 	public abstract class XOAuthBase : Securable
 	{
-		private ContextStore _context;
+		protected ContextStore Context { get; }
 
 		public virtual string GrantType => "__undefined";
 		public virtual string ResponseType => null;
@@ -93,7 +93,7 @@ namespace XOAuth.Base
 			if (!string.IsNullOrEmpty(settings.Title))
 				AuthConfig.UI.Title = settings.Title;
 
-			_context = new ContextStore();
+			Context = new ContextStore();
 		}
 
 		public void DidAuthorize(XOAuthDictionary parameters)
@@ -107,6 +107,7 @@ namespace XOAuth.Base
 			AfterAuthorizeOrFail?.Invoke(parameters, null);
 		}
 
+		//TODO: pass entire exception to log message
 		public void DidFail(XOAuthError? error = null)
 		{
 			if (error.HasValue)
@@ -132,8 +133,17 @@ namespace XOAuth.Base
 		{
 			AssureNoErrorInResponse(parameters);
 			AssureCorrectBearerType(parameters);
+			AssureAccessTokenParamsAreValid(parameters);
+			ClientConfig.UpdateFromResponse(NormalizeAccessTokenRequestKeys(parameters));
+			return parameters;
+		}
+
+		protected XOAuthDictionary ParseRefreshTokenResponse(XOAuthDictionary parameters)
+		{
+			AssureNoErrorInResponse(parameters);
+			AssureCorrectBearerType(parameters);
 			AssureRefreshTokenParamsAreValid(parameters);
-			ClientConfig.UpdateFromResponse(NormalizeRefreshTokenResponseKeys(parameters));
+			ClientConfig.UpdateFromResponse(NormalizeRefreshTokenRequestKeys(parameters));
 			return parameters;
 		}
 
@@ -143,22 +153,26 @@ namespace XOAuth.Base
 			return ParseAccessTokenResponse(dict);
 		}
 
-		protected virtual XOAuthDictionary NormalizeRefreshTokenResponseKeys(XOAuthDictionary parameters) => parameters;
+		protected virtual XOAuthDictionary NormalizeAccessTokenRequestKeys(XOAuthDictionary parameters) => parameters;
+		protected virtual XOAuthDictionary NormalizeRefreshTokenRequestKeys(XOAuthDictionary parameters) => parameters;
 
-		public abstract void HandleRedirectUrl(NSUrl redirect);
+		public virtual void HandleRedirectUrl(NSUrl redirect)
+		{
+			Logger?.Log("HandleRedirectUrl is used from abstract XOAUthBase", LogLevel.Error);
+		}
 
 		public void AssureNoErrorInResponse(XOAuthDictionary parameters, string fallback = null)
 		{
-			if (parameters.HasNonEmptyValue(ResponseKey.ErrorDescription, out var ed))
+			if (parameters.HasNonEmptyValue(RequestKey.ErrorDescription, out var ed))
 				throw new XOAuthException(XOAuthError.ResponseError, ed);
 
-			if (parameters.HasNonEmptyValue(ResponseKey.Error, out var e))
+			if (parameters.HasNonEmptyValue(RequestKey.Error, out var e))
 				throw new XOAuthException(XOAuthError.FromResponseError, e, fallback);
 		}
 
 		public void AssureCorrectBearerType(XOAuthDictionary parameters)
 		{
-			if (parameters.HasNonEmptyValue(ResponseKey.TokenType, out var tt))
+			if (parameters.HasNonEmptyValue(RequestKey.TokenType, out var tt))
 			{
 				var tokenType = tt;
 				if (tokenType.Equals("bearer")) return;
@@ -171,13 +185,13 @@ namespace XOAuth.Base
 
 		public void AssureMatchesState(XOAuthDictionary parameters)
 		{
-			if (parameters.HasNonEmptyValue(ResponseKey.State, out var s))
+			if (parameters.HasNonEmptyValue(RequestKey.State, out var s))
 			{
-				Logger?.Log($"Checking state, got {s}, expecting {_context.State}");
-				if (!_context.MatchesState(s))
+				Logger?.Log($"Checking state, got {s}, expecting {Context.State}");
+				if (!Context.MatchesState(s))
 					throw new XOAuthException(XOAuthError.InvalidState);
 
-				_context.ResetState();
+				Context.ResetState();
 			}
 			else
 			{

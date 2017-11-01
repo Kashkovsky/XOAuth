@@ -30,12 +30,12 @@
 		public const string LogoUri = "logo_uri";
 		public const string Scope = "scope";
 		public const string GrantTypes = "grant_types";
+		public const string GrantType = "grant_type";
+		public const string ResponseType = "response_type";
 		public const string ResponseTypes = "response_types";
 		public const string TokenEndpointAuthMethod = "token_endpoint_auth_method";
-	}
-
-	public static class ResponseKey
-	{
+		public const string RedirectUri = "redirect_uri";
+		public const string State = "state";
 		public const string AccessToken = "access_token";
 		public const string IdToken = "id_token";
 		public const string ExpiresIn = "expires_in";
@@ -43,7 +43,8 @@
 		public const string ErrorDescription = "error_description";
 		public const string Error = "error";
 		public const string TokenType = "token_type";
-		public const string State = "state";
 		public const string ClientSecretExpiresAt = "client_secret_expires_at";
+		public const string Swa = "swa";
+		public const string Code = "code";
 	}
 }

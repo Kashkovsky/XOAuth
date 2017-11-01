@@ -3,9 +3,10 @@ namespace XOAuth.Base
 {
 	public class ContextStore
 	{
-		private string _redirectUrl;
 		private string _state;
+
 		public string State => _state ?? (_state = Guid.NewGuid().ToString());
+		public string RedirectUrl { get; set; }
 
 		public bool MatchesState(string state)
 		{

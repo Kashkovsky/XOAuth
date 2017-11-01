@@ -99,14 +99,14 @@ namespace XOAuth.Base
 
 		public void UpdateFromResponse(XOAuthDictionary json)
 		{
-			if (json.HasNonEmptyValue(ResponseKey.AccessToken, out var at))
+			if (json.HasNonEmptyValue(RequestKey.AccessToken, out var at))
 				AccessToken = at;
-			if (json.HasNonEmptyValue(ResponseKey.IdToken, out var idt))
+			if (json.HasNonEmptyValue(RequestKey.IdToken, out var idt))
 				IdToken = idt;
 			AccessTokenExpiry = null;
-			if (json.HasNonEmptyValue(ResponseKey.ExpiresIn, out var ei))
+			if (json.HasNonEmptyValue(RequestKey.ExpiresIn, out var ei))
 				AccessTokenExpiry = DateTime.Parse(ei); //TODO: if int?
-			if (json.HasNonEmptyValue(ResponseKey.RefreshToken, out var rt))
+			if (json.HasNonEmptyValue(RequestKey.RefreshToken, out var rt))
 				RefreshToken = rt;
 		}
 

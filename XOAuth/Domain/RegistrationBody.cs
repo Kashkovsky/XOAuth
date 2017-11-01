@@ -36,7 +36,7 @@ namespace XOAuth.Domain
 
 			GrantTypes = new string[] { grantType };
 			if (allowRefreshTokens)
-				GrantTypes.Append(ResponseKey.RefreshToken);
+				GrantTypes.Append(RequestKey.RefreshToken);
 
 			if (!string.IsNullOrEmpty(responseType))
 				ResponseTypes = new string[] { responseType };

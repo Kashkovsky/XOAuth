@@ -80,9 +80,9 @@ namespace XOAuth.Flows
 			{
 				client.ClientSecret = secret;
 
-				if (json.HasNonEmptyValue(ResponseKey.ClientSecretExpiresAt, out var value) &&
+				if (json.HasNonEmptyValue(RequestKey.ClientSecretExpiresAt, out var value) &&
 					Double.TryParse(value, out var clientSecretExpiresAt) &&
-					clientSecretExpiresAt != 0)
+					clientSecretExpiresAt > 0)
 					client.Logger?.Log($"Client secret will expire on {DateTime.FromOADate(clientSecretExpiresAt)}");
 			}
 

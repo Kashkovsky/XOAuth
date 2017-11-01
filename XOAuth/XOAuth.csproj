@@ -94,6 +94,7 @@
     <Compile Include="Platform\Authorizer.cs" />
     <Compile Include="Platform\WebViewController.cs" />
     <Compile Include="Extensions\ViewExtensions.cs" />
+    <Compile Include="Flows\CodeGrant.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Base\" />

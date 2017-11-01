@@ -17,7 +17,8 @@ namespace XOAuth.Base
 			set
 			{
 				Params = Params ?? new XOAuthDictionary();
-				Params[key] = value;
+				if (!string.IsNullOrEmpty(value))
+					Params[key] = value;
 			}
 		}
 
